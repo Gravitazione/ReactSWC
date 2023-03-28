@@ -27,9 +27,24 @@ module.exports = {
     project: './tsconfig.json',
   },
   plugins: ['react', '@typescript-eslint', 'prettier'],
+  settings: {
+    'import/resolver': {
+      node: {
+        moduleDirectory: ['node_modules', 'src/'],
+      },
+    },
+  },
   rules: {
     'react/react-in-jsx-scope': 0,
     'react/jsx-uses-vars': 'error',
     'react/jsx-uses-react': 'error',
+    'import/no-extraneous-dependencies': [
+      'off',
+      {
+        devDependencies: false,
+        optionalDependencies: false,
+        peerDependencies: false,
+      },
+    ],
   },
 };
