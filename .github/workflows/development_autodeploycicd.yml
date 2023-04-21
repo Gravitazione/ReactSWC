@@ -54,12 +54,6 @@ jobs:
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
     steps:
-      - name: approvals
-        uses: trstringer/manual-approval@v1
-        with:
-          secret: ${{ github.TOKEN }}
-          approvers: Gravitazione
-          
       - name: Download artifact
         uses: actions/download-artifact@v3
         with:
