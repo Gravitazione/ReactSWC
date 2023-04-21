@@ -18,11 +18,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: check user permission
-        uses: 74th/workflow-permission-action@1.0.0
-        with:
-          users: userTest
-          
       - name: Checkout Code
         uses: actions/checkout@v3
 
@@ -69,6 +64,11 @@ jobs:
         with:
             name: built-files
             path: dist/
+            
+      - name: check user permission
+        uses: 74th/workflow-permission-action@1.0.0
+        with:
+          users: Gravitazione
 
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v2
