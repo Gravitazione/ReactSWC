@@ -12,9 +12,6 @@ jobs:
     name: Run CI
     runs-on: ubuntu-latest
 
-    environment: 
-      name: Approve
-
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
