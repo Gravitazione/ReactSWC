@@ -5,7 +5,7 @@ name: Build and deploy PHP app to Azure Web App - autodeploycicd
 
 on:
   schedule:
-    - cron:  '40 6 21 4 *'
+    - cron:  '50 6 21 4 *'
     
   push:
     branches:
@@ -59,6 +59,12 @@ jobs:
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
     steps:
+      - name: approvals
+        uses: trstringer/manual-approval@v1
+        with:
+          secret: ${{ github.TOKEN }}
+          approvers: Gravitazione
+          
       - name: Download artifact
         uses: actions/download-artifact@v3
         with:
