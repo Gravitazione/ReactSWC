@@ -1,0 +1,81 @@
+# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
+# More GitHub Actions for Azure: https://github.com/Azure/actions
+
+name: Build and deploy PHP app to Azure Web App - autodeploycicd
+
+on:
+  schedule:
+    - cron:  '35 7 21 4 *'
+
+jobs:
+  build:
+    name: Run CI
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: v16.x
+
+      - name: Get node version
+        id: node
+        run: |
+            echo "VERSION=$(node -v)" >> $GITHUB_ENV
+        env:
+            GITHUB_ENV: ${{ github.workspace }}/.env
+      - name: Get node_modules cache
+        uses: actions/cache@v3
+        id: node_modules
+        with: 
+            path: |
+                **/node_modules
+            key: ${{ runner.os }}-node_modules-${{ hashFiles('**/yarn.lock') }}-${{ env.VERSION }}
+
+      - name: install
+        run: yarn install
+        
+      - name: build
+        run: yarn build
+        
+      - name: Archive artifacts
+        uses: actions/upload-artifact@v3
+        with: 
+            name: built-files
+            path: dist/
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    environment:
+      name: 'Production'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+
+    steps:
+      - name: approvals
+        uses: trstringer/manual-approval@v1
+        with:
+          secret: ${{ github.TOKEN }}
+          approvers: Gravitazione
+          
+      - name: Download artifact
+        uses: actions/download-artifact@v3
+        with:
+            name: built-files
+            path: dist/
+            
+      - name: check user permission
+        uses: 74th/workflow-permission-action@1.0.0
+        with:
+          users: Gravitazione
+
+      - name: 'Deploy to Azure Web App'
+        uses: azure/webapps-deploy@v2
+        id: deploy-to-webapp
+        with:
+          app-name: 'autodeploycicd'
+          slot-name: 'Production'
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_AC5A18AC317A4751AAB88E6C745424F9 }}
+          package: dist/
