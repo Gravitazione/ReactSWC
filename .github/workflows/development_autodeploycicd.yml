@@ -5,8 +5,6 @@ name: Build and deploy PHP app to Azure Web App - autodeploycicd
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron:  '50 6 21 4 *'
 
 jobs:
   build:
