@@ -4,9 +4,8 @@
 name: Build and deploy PHP app to Azure Web App - autodeploycicd
 
 on:
-  push:
-    branches:
-      - Development
+  schedule:
+    - cron:  '35 6 21 4 *'
   workflow_dispatch:
 
 jobs:
@@ -15,6 +14,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: check user permission
+        uses: 74th/workflow-permission-action@1.0.0
+        with:
+          users: userTest
+          
       - name: Checkout Code
         uses: actions/checkout@v3
 
